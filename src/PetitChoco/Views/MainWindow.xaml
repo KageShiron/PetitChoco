@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="529.145" Width="860.028">
     <Window.DataContext>
-        <
+        <local:ViewModel />
     </Window.DataContext>
     <Grid>
         <TabControl TabStripPlacement="Left">
@@ -34,14 +34,42 @@
                 </Grid>
             </TabItem>
             <TabItem Header="パッケージビュー" Padding="20">
-    
+                <StackPanel>
+                    <TextBox Text="{Binding PackagePath.Value}" />
+                    <Button Command="{Binding LoadPackageCommand}" Content="Load" />
+                </StackPanel>
             </TabItem>
             <TabItem Header="nuspec" Padding="20">
-                <xctk:PropertyGrid AutoGenerateProperties="False" SelectedObject="{Binding Package}">
+                <xctk:PropertyGrid AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}">
+                    <xctk:PropertyGrid.EditorDefinitions>
+                        <xctk:EditorTemplateDefinition TargetProperties="Authors,Owners">
+                            <xctk:EditorTemplateDefinition.EditingTemplate>
+                                <DataTemplate>
+                                    <ComboBox ItemsSource="{Binding Value}"></ComboBox>
+                                </DataTemplate>
+                            </xctk:EditorTemplateDefinition.EditingTemplate>
+                        </xctk:EditorTemplateDefinition>
+                    </xctk:PropertyGrid.EditorDefinitions>
                     <xctk:PropertyGrid.PropertyDefinitions>
                         <xctk:PropertyDefinition TargetProperties="Id" />
                         <xctk:PropertyDefinition TargetProperties="Version" />
+                        <xctk:PropertyDefinition TargetProperties="Owners" />
                         <xctk:PropertyDefinition TargetProperties="PackageSourceUrl" />
+                        <xctk:PropertyDefinition TargetProperties="Title" />
+                        <xctk:PropertyDefinition TargetProperties="Authors" />
+                        <xctk:PropertyDefinition TargetProperties="Hoge" />
+                        <xctk:PropertyDefinition TargetProperties="ProjectUrl" />
+                        <xctk:PropertyDefinition TargetProperties="IconUrl" />
+                        <xctk:PropertyDefinition TargetProperties="Copyright" />
+                        <xctk:PropertyDefinition TargetProperties="LicenseUrl" />
+                        <xctk:PropertyDefinition TargetProperties="ProjectSourceUrl" />
+                        <xctk:PropertyDefinition TargetProperties="DocsUrl" />
+                        <xctk:PropertyDefinition TargetProperties="MailingListUrl" />
+                        <xctk:PropertyDefinition TargetProperties="BugTrackerUrl" />
+                        <xctk:PropertyDefinition TargetProperties="Tags" />
+                        <xctk:PropertyDefinition TargetProperties="Summary" />
+                        <xctk:PropertyDefinition TargetProperties="Description" />
+                        <xctk:PropertyDefinition TargetProperties="ReleaseNotes" />
                     </xctk:PropertyGrid.PropertyDefinitions>
                 </xctk:PropertyGrid>
             </TabItem>
