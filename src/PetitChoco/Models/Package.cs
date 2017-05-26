@@ -17,11 +17,6 @@ namespace PetitChoco.Models
         public Uri MailingListUrl { get; set; }
         public Uri BugTrackerUrl { get; set; }
 
-        public IEnumerable<string> Hoge
-        {
-            get => new[] {"a", "b", "c"};
-        }
-
 
         public Package()
         {

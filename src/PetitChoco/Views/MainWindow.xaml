@@ -40,19 +40,20 @@
                 </StackPanel>
             </TabItem>
             <TabItem Header="nuspec" Padding="20">
-                <xctk:PropertyGrid AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}">
+                <xctk:PropertyGrid AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}" >
+
                     <xctk:PropertyGrid.EditorDefinitions>
                         <xctk:EditorTemplateDefinition TargetProperties="Authors,Owners">
                             <xctk:EditorTemplateDefinition.EditingTemplate>
                                 <DataTemplate>
-                                    <ComboBox ItemsSource="{Binding Value}"></ComboBox>
+                                    <ComboBox ItemsSource="{Binding Value}"/>
                                 </DataTemplate>
                             </xctk:EditorTemplateDefinition.EditingTemplate>
                         </xctk:EditorTemplateDefinition>
                     </xctk:PropertyGrid.EditorDefinitions>
                     <xctk:PropertyGrid.PropertyDefinitions>
-                        <xctk:PropertyDefinition TargetProperties="Id" />
-                        <xctk:PropertyDefinition TargetProperties="Version" />
+                        <xctk:PropertyDefinition TargetProperties="Id" Description="パッケージのID。小文字で区切りは「-」を使う。「.」は.portableなどのサフィックスののみに使用する" />
+                        <xctk:PropertyDefinition TargetProperties="Version" Description="てすてす http://live2.nicovideo.jp/watch/lv295700989?ref=sharetw" />
                         <xctk:PropertyDefinition TargetProperties="Owners" />
                         <xctk:PropertyDefinition TargetProperties="PackageSourceUrl" />
                         <xctk:PropertyDefinition TargetProperties="Title" />
