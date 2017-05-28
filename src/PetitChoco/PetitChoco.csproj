@@ -138,6 +138,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Nuspec\NuspecReader.cs" />
+    <Compile Include="ViewModels\NullCheckBoxConverter.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

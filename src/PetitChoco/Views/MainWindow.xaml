@@ -4,14 +4,52 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PetitChoco"
+        xmlns:vm="clr-namespace:PetitChoco.ViewModels"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="529.145" Width="860.028">
+        Title="MainWindow" Height="703.7" Width="956.399">
     <Window.DataContext>
         <local:ViewModel />
     </Window.DataContext>
     <Grid>
-        <TabControl TabStripPlacement="Left">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Margin="0,5,126.333,6.825" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="パッケージディレクトリ" Width="Auto" Grid.Column="0" />
+            <TextBox  Text="{Binding PackagePath.Value}" VerticalContentAlignment="Center" Grid.Column="1" />
+            <Button Content="参照" Padding="20,5" Width="Auto" Grid.Column="2" Margin="10,0" />
+            <Button Command="{Binding LoadPackageCommand}" Padding="20,5" Content="読み込み" Grid.Column="3" />
+
+        </Grid>
+        <TabControl TabStripPlacement="Left" Grid.Row="1">
+
+            <TabItem Header="パッケージ一覧" Padding="20">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,5" Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="ディレクトリ:" Width="Auto" Grid.Column="0" />
+                        <TextBox VerticalContentAlignment="Center" Grid.Column="1" Margin="5,0,5,0" />
+                        <Button Content="参照" Padding="20,5" Width="Auto" Grid.Column="2" />
+                    </Grid>
+                    <ListBox Margin="0,0,0.333,0" Grid.Row="1" />
+                </Grid>
+            </TabItem>
             <TabItem Header="新規パッケージ" Padding="20">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -33,46 +71,97 @@
                     <Button x:Name="button" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="77.667,20,0,0" Grid.Row="4" VerticalAlignment="Top" Width="75"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="パッケージビュー" Padding="20">
-                <StackPanel>
-                    <TextBox Text="{Binding PackagePath.Value}" />
-                    <Button Command="{Binding LoadPackageCommand}" Content="Load" />
-                </StackPanel>
-            </TabItem>
             <TabItem Header="nuspec" Padding="20">
-                <xctk:PropertyGrid AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}" >
+                <Grid>
 
-                    <xctk:PropertyGrid.EditorDefinitions>
-                        <xctk:EditorTemplateDefinition TargetProperties="Authors,Owners">
-                            <xctk:EditorTemplateDefinition.EditingTemplate>
-                                <DataTemplate>
-                                    <ComboBox ItemsSource="{Binding Value}"/>
-                                </DataTemplate>
-                            </xctk:EditorTemplateDefinition.EditingTemplate>
-                        </xctk:EditorTemplateDefinition>
-                    </xctk:PropertyGrid.EditorDefinitions>
-                    <xctk:PropertyGrid.PropertyDefinitions>
-                        <xctk:PropertyDefinition TargetProperties="Id" Description="パッケージのID。小文字で区切りは「-」を使う。「.」は.portableなどのサフィックスののみに使用する" />
-                        <xctk:PropertyDefinition TargetProperties="Version" Description="てすてす http://live2.nicovideo.jp/watch/lv295700989?ref=sharetw" />
-                        <xctk:PropertyDefinition TargetProperties="Owners" />
-                        <xctk:PropertyDefinition TargetProperties="PackageSourceUrl" />
-                        <xctk:PropertyDefinition TargetProperties="Title" />
-                        <xctk:PropertyDefinition TargetProperties="Authors" />
-                        <xctk:PropertyDefinition TargetProperties="Hoge" />
-                        <xctk:PropertyDefinition TargetProperties="ProjectUrl" />
-                        <xctk:PropertyDefinition TargetProperties="IconUrl" />
-                        <xctk:PropertyDefinition TargetProperties="Copyright" />
-                        <xctk:PropertyDefinition TargetProperties="LicenseUrl" />
-                        <xctk:PropertyDefinition TargetProperties="ProjectSourceUrl" />
-                        <xctk:PropertyDefinition TargetProperties="DocsUrl" />
-                        <xctk:PropertyDefinition TargetProperties="MailingListUrl" />
-                        <xctk:PropertyDefinition TargetProperties="BugTrackerUrl" />
-                        <xctk:PropertyDefinition TargetProperties="Tags" />
-                        <xctk:PropertyDefinition TargetProperties="Summary" />
-                        <xctk:PropertyDefinition TargetProperties="Description" />
-                        <xctk:PropertyDefinition TargetProperties="ReleaseNotes" />
-                    </xctk:PropertyGrid.PropertyDefinitions>
-                </xctk:PropertyGrid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+                    <xctk:PropertyGrid Grid.Row="0" AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}" >
+                        <xctk:PropertyGrid.Resources>
+                            <vm:NullCheckBoxConverter x:Key="NullCheckBoxConverter" />
+                        </xctk:PropertyGrid.Resources>
+                        <xctk:PropertyGrid.EditorDefinitions>
+                            <xctk:EditorTemplateDefinition TargetProperties="*">
+                                <xctk:EditorTemplateDefinition.EditingTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" Margin="5,0" x:Name="IsNull"  IsChecked="{Binding Value, Converter={StaticResource NullCheckBoxConverter} , Mode=OneWay}">
+                                                <CheckBox.LayoutTransform>
+                                                    <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
+                                                </CheckBox.LayoutTransform>
+                                            </CheckBox>
+                                            <TextBox Grid.Column="1" Text="{Binding Value}" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Grid}},Path=Children[0].IsChecked}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </xctk:EditorTemplateDefinition.EditingTemplate>
+                            </xctk:EditorTemplateDefinition>
+                            <xctk:EditorTemplateDefinition TargetProperties="Authors,Owners">
+                                <xctk:EditorTemplateDefinition.EditingTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding Value}"/>
+                                    </DataTemplate>
+                                </xctk:EditorTemplateDefinition.EditingTemplate>
+                            </xctk:EditorTemplateDefinition>
+                        </xctk:PropertyGrid.EditorDefinitions>
+                        <xctk:PropertyGrid.PropertyDefinitions>
+                            <xctk:PropertyDefinition TargetProperties="Id" Description="パッケージのID。小文字で区切りは「-」を使う。「.」は.portableなどのサフィックスののみに使用する" />
+                            <xctk:PropertyDefinition TargetProperties="Version" Description="てすてす http://live2.nicovideo.jp/watch/lv295700989?ref=sharetw" />
+                            <xctk:PropertyDefinition TargetProperties="Owners" />
+                            <xctk:PropertyDefinition TargetProperties="PackageSourceUrl" />
+                            <xctk:PropertyDefinition TargetProperties="Title" />
+                            <xctk:PropertyDefinition TargetProperties="Authors" />
+                            <xctk:PropertyDefinition TargetProperties="Hoge" />
+                            <xctk:PropertyDefinition TargetProperties="ProjectUrl" />
+                            <xctk:PropertyDefinition TargetProperties="IconUrl" />
+                            <xctk:PropertyDefinition TargetProperties="Copyright" />
+                            <xctk:PropertyDefinition TargetProperties="LicenseUrl" />
+                            <xctk:PropertyDefinition TargetProperties="ProjectSourceUrl" />
+                            <xctk:PropertyDefinition TargetProperties="DocsUrl" />
+                            <xctk:PropertyDefinition TargetProperties="MailingListUrl" />
+                            <xctk:PropertyDefinition TargetProperties="BugTrackerUrl" />
+                            <xctk:PropertyDefinition TargetProperties="Tags" />
+                            <xctk:PropertyDefinition TargetProperties="Summary" />
+                            <xctk:PropertyDefinition TargetProperties="Description" />
+                            <xctk:PropertyDefinition TargetProperties="ReleaseNotes" />
+                        </xctk:PropertyGrid.PropertyDefinitions>
+                    </xctk:PropertyGrid>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
+                        <Button Content="書き込み" Margin="5" Height="30" Padding="20,0" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="ファイル" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TreeView Grid.Row="0" />
+                        <ToolBar Margin="0,10,0,0" Grid.Row="1">
+                            <Button Content="新規ファイル" />
+                            <Button Content="新規ディレクトリ" />
+                            <Button Content="新規ファイル" />
+                        </ToolBar>
+                    </Grid>
+                    <GridSplitter Grid.Column="1" />
+                    <TextBox Grid.Column="2" 
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             VerticalContentAlignment="Top"/>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
