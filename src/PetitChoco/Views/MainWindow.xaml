@@ -12,6 +12,9 @@
     <Window.DataContext>
         <local:ViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <vm:NullCheckBoxConverter x:Key="NullCheckBoxConverter" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -124,59 +127,19 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
-                    <xctk:PropertyGrid Grid.Row="0" AutoGenerateProperties="False" SelectedObject="{Binding Package.Value}" >
-                        <xctk:PropertyGrid.Resources>
-                            <vm:NullCheckBoxConverter x:Key="NullCheckBoxConverter" />
-                        </xctk:PropertyGrid.Resources>
-                        <xctk:PropertyGrid.EditorDefinitions>
-                            <xctk:EditorTemplateDefinition TargetProperties="*">
-                                <xctk:EditorTemplateDefinition.EditingTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <CheckBox Grid.Column="0" Margin="5,0" x:Name="IsNull"  IsChecked="{Binding Value, Converter={StaticResource NullCheckBoxConverter} , Mode=OneWay}">
-                                                <CheckBox.LayoutTransform>
-                                                    <ScaleTransform ScaleX="1.3" ScaleY="1.3" />
-                                                </CheckBox.LayoutTransform>
-                                            </CheckBox>
-                                            <TextBox Grid.Column="1" Text="{Binding Value}" /><!-- IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Grid}},Path=Children[0].IsChecked}" />-->
-                                        </Grid>
+                    <DataGrid ItemsSource="{Binding Package.Value.MetaData}" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="メタデータ名" Binding="{Binding Name}"></DataGridTextColumn>
+                            <DataGridCheckBoxColumn Header="登録" Binding="{Binding IsExist ,Mode=OneWay , Converter={StaticResource NullCheckBoxConverter}}"></DataGridCheckBoxColumn>
+                            <DataGridTemplateColumn Header="内容">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate >
+                                        <TextBox Text="{Binding Value}" AcceptsReturn="True" AcceptsTab="True"></TextBox>
                                     </DataTemplate>
-                                </xctk:EditorTemplateDefinition.EditingTemplate>
-                            </xctk:EditorTemplateDefinition>
-                            <xctk:EditorTemplateDefinition TargetProperties="Authors,Owners">
-                                <xctk:EditorTemplateDefinition.EditingTemplate>
-                                    <DataTemplate>
-                                        <ComboBox ItemsSource="{Binding Value}"/>
-                                    </DataTemplate>
-                                </xctk:EditorTemplateDefinition.EditingTemplate>
-                            </xctk:EditorTemplateDefinition>
-                        </xctk:PropertyGrid.EditorDefinitions>
-                        <xctk:PropertyGrid.PropertyDefinitions>
-                            <xctk:PropertyDefinition TargetProperties="Id" Description="パッケージのID。小文字で区切りは「-」を使う。「.」は.portableなどのサフィックスののみに使用する" />
-                            <xctk:PropertyDefinition TargetProperties="Version" Description="てすてす http://live2.nicovideo.jp/watch/lv295700989?ref=sharetw" />
-                            <xctk:PropertyDefinition TargetProperties="Owners" />
-                            <xctk:PropertyDefinition TargetProperties="PackageSourceUrl" />
-                            <xctk:PropertyDefinition TargetProperties="Title" />
-                            <xctk:PropertyDefinition TargetProperties="Authors" />
-                            <xctk:PropertyDefinition TargetProperties="Hoge" />
-                            <xctk:PropertyDefinition TargetProperties="ProjectUrl" />
-                            <xctk:PropertyDefinition TargetProperties="IconUrl" />
-                            <xctk:PropertyDefinition TargetProperties="Copyright" />
-                            <xctk:PropertyDefinition TargetProperties="LicenseUrl" />
-                            <xctk:PropertyDefinition TargetProperties="ProjectSourceUrl" />
-                            <xctk:PropertyDefinition TargetProperties="DocsUrl" />
-                            <xctk:PropertyDefinition TargetProperties="MailingListUrl" />
-                            <xctk:PropertyDefinition TargetProperties="BugTrackerUrl" />
-                            <xctk:PropertyDefinition TargetProperties="Tags" />
-                            <xctk:PropertyDefinition TargetProperties="Summary" />
-                            <xctk:PropertyDefinition TargetProperties="Description" />
-                            <xctk:PropertyDefinition TargetProperties="ReleaseNotes" />
-                        </xctk:PropertyGrid.PropertyDefinitions>
-                    </xctk:PropertyGrid>
+                                </DataGridTemplateColumn.CellTemplate>    
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
                         <Button Content="書き込み" Margin="5" Height="30" Padding="20,0" />
                     </StackPanel>
@@ -226,3 +189,4 @@
         </TabControl>
     </Grid>
 </Window>
+

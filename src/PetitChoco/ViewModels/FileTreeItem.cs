@@ -29,7 +29,7 @@ namespace PetitChoco.ViewModels
 
         public static IEnumerable<FileTreeItem> GetChildren(DirectoryInfo dir)
         {
-            return dir.GetDirectories().Select(x => new FileTreeItem(x))
+            return dir?.GetDirectories().Select(x => new FileTreeItem(x))
                 .Concat(dir.GetFiles().Select(x => new FileTreeItem(x)));
         }
     }
