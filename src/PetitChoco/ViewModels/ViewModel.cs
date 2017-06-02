@@ -1,35 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using NuGet;
 using PetitChoco.Models;
 using PetitChoco.Nuspec;
+using PetitChoco.ViewModels;
 using Reactive.Bindings;
 using Reactive;
+using Reactive.Bindings.Extensions;
 
 namespace PetitChoco
 {
     class ViewModel
     {
+        private PackagesDirectoryModel PackagesDirectoryModel { get;  } = new PackagesDirectoryModel();
 
         public ReactiveProperty<string> PackagePath { get; }
         public ReactiveProperty<Package> Package { get; }
 
         public ReactiveCommand LoadPackageCommand { get; }
+        public ReactiveProperty<ToolViewModel> ToolViewModel { get; }
+        public ReactiveProperty<string> PackageListPath { get; set; }
+        public ReactiveProperty<string[]> PackageList { get; }
 
         public ViewModel()
         {
             PackagePath = new ReactiveProperty<string>();
             Package =  new ReactiveProperty<Package>();
             LoadPackageCommand = new ReactiveCommand();
-            LoadPackageCommand.Subscribe(() =>
-            {
-                MessageBox.Show("");
-                Package.Value = NuspecReader.Read(PackagePath.Value);
-            } );
+            LoadPackageCommand.Subscribe(() => Package.Value = new Package(PackagePath.Value));
+
+            PackageListPath = PackagesDirectoryModel.ToReactivePropertyAsSynchronized(
+                m => m.PackageDirectioryPath,
+                x => x,
+                s => s,
+                ReactivePropertyMode.DistinctUntilChanged | ReactivePropertyMode.RaiseLatestValueOnSubscribe
+                , true);
+
+
+            PackageList = PackagesDirectoryModel.ObserveProperty(m => m.Directories).ToReactiveProperty();
+
+            ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
         }
     }
 }

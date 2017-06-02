@@ -137,8 +137,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Models\PackagesDirectoryModel.cs" />
+    <Compile Include="Models\ToolModel.cs" />
     <Compile Include="Nuspec\NuspecReader.cs" />
     <Compile Include="ViewModels\NullCheckBoxConverter.cs" />
+    <Compile Include="ViewModels\ToolViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
