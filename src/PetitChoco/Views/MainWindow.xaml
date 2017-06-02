@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:PetitChoco"
         xmlns:vm="clr-namespace:PetitChoco.ViewModels"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:windowsPresentationFoundation="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation;assembly=Microsoft.WindowsAPICodePack.Shell"
         mc:Ignorable="d"
         Title="MainWindow" Height="703.7" Width="956.399">
     <Window.DataContext>
@@ -193,8 +194,20 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-
-                        <TreeView Grid.Row="0" ItemsSource="{Binding Package.Value.DirectoryInfo}" />
+                        <TreeView ItemsSource="{Binding PackageRootItem.Value}">
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="TreeViewItem">
+                                    <Setter Property="IsExpanded" Value="True"></Setter>
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                            <TreeView.ItemTemplate>
+                                <HierarchicalDataTemplate ItemsSource="{Binding Children}" >
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Label}" />
+                                    </StackPanel>
+                                </HierarchicalDataTemplate>
+                            </TreeView.ItemTemplate>
+                        </TreeView>
                         <ToolBar Margin="0,10,0,0" Grid.Row="1">
                             <Button Content="新規ファイル" />
                             <Button Content="新規ディレクトリ" />

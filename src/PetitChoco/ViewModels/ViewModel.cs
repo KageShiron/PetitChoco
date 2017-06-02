@@ -28,10 +28,12 @@ namespace PetitChoco
         public ReactiveProperty<string> PackageListPath { get; set; }
         public ReactiveProperty<string[]> PackageList { get; }
 
+        public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
+
         public ViewModel()
         {
             PackagePath = new ReactiveProperty<string>();
-            Package =  new ReactiveProperty<Package>();
+            Package = new ReactiveProperty<Package>();
             LoadPackageCommand = new ReactiveCommand();
             LoadPackageCommand.Subscribe(() => Package.Value = new Package(PackagePath.Value));
 
@@ -44,6 +46,8 @@ namespace PetitChoco
 
 
             PackageList = PackagesDirectoryModel.ObserveProperty(m => m.Directories).ToReactiveProperty();
+            PackageRootItem = Package.Select(x => x == null
+                ? null : FileTreeItem.GetChildren(x.DirectoryInfo)).ToReactiveProperty();
 
             ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
         }
