@@ -12,76 +12,72 @@ namespace PetitChoco.Models
 {
     public class MetaData
     {
-        private static KnwonMetaData[] KnwonMetaData { get; }
+        private static IDictionary<string,KnwonMetaData> KnwonMetaData { get; }
         static MetaData()
         {
-            KnwonMetaData = new[]
+            KnwonMetaData = new Dictionary<string,KnwonMetaData>()
             {
-                new KnwonMetaData("id", "", EditMode.PackageId),
-                new KnwonMetaData("version", "", EditMode.Version),
-                new KnwonMetaData("packageSourceUrl", "", EditMode.Url),
-                new KnwonMetaData("owners", "", EditMode.SingleLineString),
+                {"id",new KnwonMetaData("id", "", EditMode.PackageId)},
+                {"version",new KnwonMetaData("version", "", EditMode.Version)},
+                {"packageSourceUrl",new KnwonMetaData("packageSourceUrl", "", EditMode.Url)},
+                {"owners",new KnwonMetaData("owners", "", EditMode.SingleLineString)},
 
-                new KnwonMetaData("title", "", EditMode.SingleLineString),
-                new KnwonMetaData("authors", "", EditMode.CommaSeparatedStrings),
-                new KnwonMetaData("projectUrl", "", EditMode.Url),
-                new KnwonMetaData("iconUrl", "", EditMode.Url),
-                new KnwonMetaData("copyright", "", EditMode.SingleLineString),
-                new KnwonMetaData("licenseUrl", "", EditMode.Url),
-                new KnwonMetaData("requireLicenseAcceptance", "", EditMode.Boolean),
-                new KnwonMetaData("projectSourceUrl", "", EditMode.Url),
-                new KnwonMetaData("docsUrl", "", EditMode.Url),
-                new KnwonMetaData("mailingListUrl", "", EditMode.Url),
-                new KnwonMetaData("bugTrackerUrl", "", EditMode.Url),
-                new KnwonMetaData("tags", "", EditMode.SpaceSeparatedStrings),
-                new KnwonMetaData("summery", "", EditMode.MultiLineString),
-                new KnwonMetaData("description", "", EditMode.Markdown),
-                new KnwonMetaData("releaseNotes", "", EditMode.Markdown),
+                {"title",new KnwonMetaData("title", "", EditMode.SingleLineString)},
+                {"authors",new KnwonMetaData("authors", "", EditMode.CommaSeparatedStrings)},
+                {"projectUrl",new KnwonMetaData("projectUrl", "", EditMode.Url)},
+                {"iconUrl",new KnwonMetaData("iconUrl", "", EditMode.Url)},
+                {"copyright",new KnwonMetaData("copyright", "", EditMode.SingleLineString)},
+                {"licenseUrl",new KnwonMetaData("licenseUrl", "", EditMode.Url)},
+                {"requireLicenseAcceptance",new KnwonMetaData("requireLicenseAcceptance", "", EditMode.Boolean)},
+                {"projectSourceUrl",new KnwonMetaData("projectSourceUrl", "", EditMode.Url)},
+                {"docsUrl",new KnwonMetaData("docsUrl", "", EditMode.Url)},
+                {"mailingListUrl",new KnwonMetaData("mailingListUrl", "", EditMode.Url)},
+                {"bugTrackerUrl",new KnwonMetaData("bugTrackerUrl", "", EditMode.Url)},
+                {"tags",new KnwonMetaData("tags", "", EditMode.SpaceSeparatedStrings)},
+                {"summery",new KnwonMetaData("summery", "", EditMode.MultiLineString)},
+                {"description",new KnwonMetaData("description", "", EditMode.Markdown)},
+                {"releaseNotes",new KnwonMetaData("releaseNotes", "", EditMode.Markdown)},
             };
         }
-
-        static void AddKnownMetaData(IList<MetaData> list)
-        {
-            
-        }
+        
 
         public MetaData()
         {
-            
+            EditMode = EditMode.MultiLineString;
+            Description = "";
         }
 
-        public MetaData( string name ,string value, bool isExist , string description , EditMode editMode )
+        public MetaData( string name , string value )
         {
             Name = name;
-            IsExist = isExist;
-            Description = description;
             Value = value;
-            EditMode = editMode;
         }
+
+        private bool _nameReadOnly = false;
 
         /// <summary>
         /// メタデータがnuspec内に存在するかを示します
         /// </summary>
-        public bool IsExist { get; set; }
+        public virtual bool IsExist { get; set; }
         /// <summary>
         /// メタデータのキー名
         /// </summary>
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
         /// <summary>
         /// メタデータの中身
         /// </summary>
-        public string Value { get; set; }
+        public virtual string Value { get; set; }
         /// <summary>
         /// メタデータの概要
         /// </summary>
-        public string Description { get;}
+        public virtual string Description { get;}
 
         /// <summary>
         /// メタデータがChocolateyで一般に使われているかを示します。
         /// </summary>
-        public bool IsKwnown => Description != "";
+        public virtual bool IsKwnown => Description != "";
 
-        public EditMode EditMode { get; }
+        public virtual EditMode EditMode { get; }
     }
 
     public class KnwonMetaData
@@ -93,8 +89,13 @@ namespace PetitChoco.Models
             EditMode = editMode;
         }
         public string Name { get; }
-        public string Description { get; }
+        public string Description { get;  }
         public EditMode EditMode { get; }
+
+        public MetaData CreateMetaData()
+        {
+            
+        }
     }
 
     public enum EditMode
@@ -166,7 +167,7 @@ namespace PetitChoco.Models
         {
             DirectoryName = dirName;
             var reader = new NuGet.Packaging.PackageFolderReader(dirName).NuspecReader;
-            MetaData = reader.GetMetadata().Select(m => new MetaData(m.Key, m.Value, true, "")).ToList();
+            MetaData = reader.GetMetadata().Select(m => new MetaData(m.Key, m.Value)).ToList();
         }
     }
 }
