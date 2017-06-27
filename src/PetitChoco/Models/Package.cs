@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,31 +13,31 @@ namespace PetitChoco.Models
 {
     public class MetaData
     {
-        private static IDictionary<string,KnwonMetaData> KnwonMetaData { get; }
+        public static IEnumerable<KnwonMetaData> KnwonMetaData { get; }
         static MetaData()
         {
-            KnwonMetaData = new Dictionary<string,KnwonMetaData>()
+            KnwonMetaData = new List<KnwonMetaData>()
             {
-                {"id",new KnwonMetaData("id", "", EditMode.PackageId)},
-                {"version",new KnwonMetaData("version", "", EditMode.Version)},
-                {"packageSourceUrl",new KnwonMetaData("packageSourceUrl", "", EditMode.Url)},
-                {"owners",new KnwonMetaData("owners", "", EditMode.SingleLineString)},
+                new KnwonMetaData("id", "", EditMode.PackageId),
+                new KnwonMetaData("version", "", EditMode.Version),
+                new KnwonMetaData("packageSourceUrl", "", EditMode.Url),
+                new KnwonMetaData("owners", "", EditMode.SingleLineString),
 
-                {"title",new KnwonMetaData("title", "", EditMode.SingleLineString)},
-                {"authors",new KnwonMetaData("authors", "", EditMode.CommaSeparatedStrings)},
-                {"projectUrl",new KnwonMetaData("projectUrl", "", EditMode.Url)},
-                {"iconUrl",new KnwonMetaData("iconUrl", "", EditMode.Url)},
-                {"copyright",new KnwonMetaData("copyright", "", EditMode.SingleLineString)},
-                {"licenseUrl",new KnwonMetaData("licenseUrl", "", EditMode.Url)},
-                {"requireLicenseAcceptance",new KnwonMetaData("requireLicenseAcceptance", "", EditMode.Boolean)},
-                {"projectSourceUrl",new KnwonMetaData("projectSourceUrl", "", EditMode.Url)},
-                {"docsUrl",new KnwonMetaData("docsUrl", "", EditMode.Url)},
-                {"mailingListUrl",new KnwonMetaData("mailingListUrl", "", EditMode.Url)},
-                {"bugTrackerUrl",new KnwonMetaData("bugTrackerUrl", "", EditMode.Url)},
-                {"tags",new KnwonMetaData("tags", "", EditMode.SpaceSeparatedStrings)},
-                {"summery",new KnwonMetaData("summery", "", EditMode.MultiLineString)},
-                {"description",new KnwonMetaData("description", "", EditMode.Markdown)},
-                {"releaseNotes",new KnwonMetaData("releaseNotes", "", EditMode.Markdown)},
+                new KnwonMetaData("title", "", EditMode.SingleLineString),
+                new KnwonMetaData("authors", "", EditMode.CommaSeparatedStrings),
+                new KnwonMetaData("projectUrl", "", EditMode.Url),
+                new KnwonMetaData("iconUrl", "", EditMode.Url),
+                new KnwonMetaData("copyright", "", EditMode.SingleLineString),
+                new KnwonMetaData("licenseUrl", "", EditMode.Url),
+                new KnwonMetaData("requireLicenseAcceptance", "", EditMode.Boolean),
+                new KnwonMetaData("projectSourceUrl", "", EditMode.Url),
+                new KnwonMetaData("docsUrl", "", EditMode.Url),
+                new KnwonMetaData("mailingListUrl", "", EditMode.Url),
+                new KnwonMetaData("bugTrackerUrl", "", EditMode.Url),
+                new KnwonMetaData("tags", "", EditMode.SpaceSeparatedStrings),
+                new KnwonMetaData("summery", "", EditMode.MultiLineString),
+                new KnwonMetaData("description", "", EditMode.Markdown),
+                new KnwonMetaData("releaseNotes", "", EditMode.Markdown),
             };
         }
         
@@ -47,10 +48,12 @@ namespace PetitChoco.Models
             Description = "";
         }
 
-        public MetaData( string name , string value )
+        public MetaData( string name , string value , EditMode editMode , string desc )
         {
             Name = name;
             Value = value;
+            EditMode = editMode;
+            Description = desc;
         }
 
         private bool _nameReadOnly = false;
@@ -92,9 +95,9 @@ namespace PetitChoco.Models
         public string Description { get;  }
         public EditMode EditMode { get; }
 
-        public MetaData CreateMetaData()
+        public MetaData CreateMetaData( string value )
         {
-            
+            return new MetaData(Name,value,EditMode,Description);
         }
     }
 
@@ -167,7 +170,15 @@ namespace PetitChoco.Models
         {
             DirectoryName = dirName;
             var reader = new NuGet.Packaging.PackageFolderReader(dirName).NuspecReader;
-            MetaData = reader.GetMetadata().Select(m => new MetaData(m.Key, m.Value)).ToList();
+            var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
+            MetaData = Models.MetaData.KnwonMetaData.Select(m =>
+            {
+                MetaData meta;
+                string value;
+                ms.TryGetValue(m.Name, out value);
+                return m.CreateMetaData(value);
+            }).ToList();
+            //.Select(m => new MetaData(m.Key, m.Value)).ToList();
         }
     }
 }

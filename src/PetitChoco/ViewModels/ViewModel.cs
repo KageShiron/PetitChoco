@@ -32,7 +32,7 @@ namespace PetitChoco
 
         public ViewModel()
         {
-            PackagePath = new ReactiveProperty<string>(@"c:\src\choco\xedit");
+            PackagePath = new ReactiveProperty<string>(@"c:\src\choco\pandoc-crossref");
             Package = new ReactiveProperty<Package>();
             LoadPackageCommand = new ReactiveCommand();
             LoadPackageCommand.Subscribe(() => Package.Value = new Package(PackagePath.Value));

@@ -127,7 +127,7 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
-                    <DataGrid ItemsSource="{Binding Package.Value.MetaData}" AutoGenerateColumns="False">
+                    <DataGrid ItemsSource="{Binding Package.Value.MetaData}" AutoGenerateColumns="False" HorizontalGridLinesBrush="LightGray" VerticalGridLinesBrush="LightGray">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="メタデータ名" Binding="{Binding Name}"></DataGridTextColumn>
                             <DataGridCheckBoxColumn Header="登録" Binding="{Binding IsExist ,Mode=OneWay , Converter={StaticResource NullCheckBoxConverter}}"></DataGridCheckBoxColumn>
