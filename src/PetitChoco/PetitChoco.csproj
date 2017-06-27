@@ -154,6 +154,7 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ValueDataTemplateSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\Package.cs" />

@@ -173,7 +173,6 @@ namespace PetitChoco.Models
             var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
             MetaData = Models.MetaData.KnwonMetaData.Select(m =>
             {
-                MetaData meta;
                 string value;
                 ms.TryGetValue(m.Name, out value);
                 return m.CreateMetaData(value);

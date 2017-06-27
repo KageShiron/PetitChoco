@@ -7,6 +7,8 @@
         xmlns:vm="clr-namespace:PetitChoco.ViewModels"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:windowsPresentationFoundation="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation;assembly=Microsoft.WindowsAPICodePack.Shell"
+        xmlns:models="clr-namespace:PetitChoco.Models"
+        xmlns:views="clr-namespace:PetitChoco.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="703.7" Width="956.399">
     <Window.DataContext>
@@ -131,12 +133,34 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="メタデータ名" Binding="{Binding Name}"></DataGridTextColumn>
                             <DataGridCheckBoxColumn Header="登録" Binding="{Binding IsExist ,Mode=OneWay , Converter={StaticResource NullCheckBoxConverter}}"></DataGridCheckBoxColumn>
-                            <DataGridTemplateColumn Header="内容">
+                            <DataGridTextColumn Header="型" Binding="{Binding EditMode,Mode=OneWay}" />
+                            <DataGridTemplateColumn Header="内容" >
+                                <DataGridTemplateColumn.CellEditingTemplateSelector >
+                                    <views:ValueDataTemplateSelector Value="{Binding EditMode}">
+                                        <views:Template Value="{x:Static models:EditMode.Boolean}">
+                                            <DataTemplate>
+                                                <CheckBox Checked="{Binding Value}"></CheckBox>
+                                            </DataTemplate>
+                                        </views:Template>
+                                    </views:ValueDataTemplateSelector>
+                                </DataGridTemplateColumn.CellEditingTemplateSelector>
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate >
-                                        <TextBox Text="{Binding Value}" AcceptsReturn="True" AcceptsTab="True"></TextBox>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Value}" /> 
                                     </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>    
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding Value}" x:Name="ValueTextBox"></TextBox>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding EditMode}" Value="{x:Static models:EditMode.Markdown}">
+                                                <Setter TargetName="ValueTextBox" Property="AcceptsReturn" Value="True" />
+                                                <Setter TargetName="ValueTextBox" Property="AcceptsTab" Value="True" />
+                                                <Setter TargetName="ValueTextBox" Property="MinLines" Value="2" />
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>    
                             </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
