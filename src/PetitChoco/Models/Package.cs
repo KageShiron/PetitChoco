@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
@@ -11,7 +12,7 @@ using Prism.Mvvm;
 
 namespace PetitChoco.Models
 {
-    public class MetaData
+    public class MetaData : BindableBase
     {
         public static IEnumerable<KnwonMetaData> KnwonMetaData { get; }
         static MetaData()
@@ -165,6 +166,12 @@ namespace PetitChoco.Models
         public string MailingListUrl { get; set; }
         public string BugTrackerUrl { get; set; }
         public DirectoryInfo DirectoryInfo =>  new DirectoryInfo(DirectoryName);
+
+        public Package()
+        {
+            DirectoryName = "";
+            MetaData = new List<MetaData>();
+        }
 
         public Package( string dirName )
         {

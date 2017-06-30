@@ -28,12 +28,14 @@ namespace PetitChoco
         public ReactiveProperty<string> PackageListPath { get; set; }
         public ReactiveProperty<string[]> PackageList { get; }
 
+        public ReactiveCollection<MetaDataViewModel> PackageMetaData { get; }
+
         public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
 
         public ViewModel()
         {
             PackagePath = new ReactiveProperty<string>(@"c:\src\choco\pandoc-crossref");
-            Package = new ReactiveProperty<Package>();
+            Package = new ReactiveProperty<Package>(new Package());
             LoadPackageCommand = new ReactiveCommand();
             LoadPackageCommand.Subscribe(() => Package.Value = new Package(PackagePath.Value));
 
@@ -50,6 +52,7 @@ namespace PetitChoco
                 ? null : FileTreeItem.GetChildren(x.DirectoryInfo)).ToReactiveProperty();
 
             ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
+            PackageMetaData = new ReactiveCollection<MetaDataViewModel>(Package?.Value?.MetaData.Select(m => new MetaDataViewModel(m)).ToObservable());
         }
     }
 }
