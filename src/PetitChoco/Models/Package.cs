@@ -146,6 +146,8 @@ namespace PetitChoco.Models
     {
         public string DirectoryName { get; }
         public IList<MetaData> MetaData { get; }
+        public DirectoryInfo DirectoryInfo => new DirectoryInfo(DirectoryName);
+        /*
         public string RequireLicenseAcceptance { get; set; }
         public string Description { get; set; }
         public string Summary { get; set; }
@@ -164,8 +166,7 @@ namespace PetitChoco.Models
         public string ProjectSourceUrl { get; set; }
         public string DocsUrl { get; set; }
         public string MailingListUrl { get; set; }
-        public string BugTrackerUrl { get; set; }
-        public DirectoryInfo DirectoryInfo =>  new DirectoryInfo(DirectoryName);
+        public string BugTrackerUrl { get; set; }*/
 
         public Package()
         {

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -18,26 +20,26 @@ namespace PetitChoco
 {
     class ViewModel
     {
-        private PackagesDirectoryModel PackagesDirectoryModel { get;  } = new PackagesDirectoryModel();
+        private PackagesDirectoryModel PackagesDirectoryModel { get; } = new PackagesDirectoryModel();
 
         public ReactiveProperty<string> PackagePath { get; }
-        public ReactiveProperty<Package> Package { get; }
+        public ReactiveProperty<PackageViewModel> Package { get; }
 
         public ReactiveCommand LoadPackageCommand { get; }
         public ReactiveProperty<ToolViewModel> ToolViewModel { get; }
         public ReactiveProperty<string> PackageListPath { get; set; }
         public ReactiveProperty<string[]> PackageList { get; }
 
-        public ReactiveCollection<MetaDataViewModel> PackageMetaData { get; }
+        public ReactiveProperty<ReactiveCollection<MetaDataViewModel>> PackageMetaData { get; }
 
         public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
 
         public ViewModel()
         {
             PackagePath = new ReactiveProperty<string>(@"c:\src\choco\pandoc-crossref");
-            Package = new ReactiveProperty<Package>(new Package());
+            Package = new ReactiveProperty<PackageViewModel>(new PackageViewModel());
             LoadPackageCommand = new ReactiveCommand();
-            LoadPackageCommand.Subscribe(() => Package.Value = new Package(PackagePath.Value));
+            LoadPackageCommand.Subscribe(() => Package.Value = new PackageViewModel(new Package(PackagePath.Value)));
 
             PackageListPath = PackagesDirectoryModel.ToReactivePropertyAsSynchronized(
                 m => m.PackageDirectioryPath,
@@ -49,10 +51,11 @@ namespace PetitChoco
 
             PackageList = PackagesDirectoryModel.ObserveProperty(m => m.Directories).ToReactiveProperty();
             PackageRootItem = Package.Select(x => x == null
-                ? null : FileTreeItem.GetChildren(x.DirectoryInfo)).ToReactiveProperty();
+                ? null
+                : FileTreeItem.GetChildren(x.DirectoryInfo.Value)).ToReactiveProperty();
 
             ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
-            PackageMetaData = new ReactiveCollection<MetaDataViewModel>(Package?.Value?.MetaData.Select(m => new MetaDataViewModel(m)).ToObservable());
+            PackageMetaData = Package.Select(x => x.MetaData).ToReactiveProperty();
         }
     }
 }

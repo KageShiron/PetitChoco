@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:PetitChoco.Views"
+                    xmlns:viewModels="clr-namespace:PetitChoco.ViewModels"
+                    xmlns:converters="clr-namespace:PetitChoco.Converters"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <viewModels:NullCheckBoxConverter x:Key="NullCheckBoxConverter" />
+    <converters:TryParseConverter  x:Key="TryParseConverter"/>
+</ResourceDictionary>

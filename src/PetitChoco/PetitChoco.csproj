@@ -144,12 +144,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\BooleanConverter.cs" />
+    <Compile Include="Converters\TryParseConverter.cs" />
     <Compile Include="Models\PackagesDirectoryModel.cs" />
     <Compile Include="Models\ToolModel.cs" />
     <Compile Include="Nuspec\NuspecReader.cs" />
     <Compile Include="ViewModels\FileTreeItem.cs" />
     <Compile Include="ViewModels\NullCheckBoxConverter.cs" />
     <Compile Include="ViewModels\MetaDataViewModel.cs" />
+    <Compile Include="ViewModels\PackageViewModel.cs" />
     <Compile Include="ViewModels\ToolViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -193,6 +196,10 @@
     <Page Include="Views\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\MainWindowResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup />
