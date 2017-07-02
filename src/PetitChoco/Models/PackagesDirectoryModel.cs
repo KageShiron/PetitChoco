@@ -27,7 +27,7 @@ namespace PetitChoco.Models
         {
             get
             {
-                if (PackageDirectioryPath == null || !Directory.Exists(PackageDirectioryPath)) return null;
+                if (PackageDirectioryPath == null || !Directory.Exists(PackageDirectioryPath)) return Array.Empty<string>();
                 return Directory.GetDirectories(PackageDirectioryPath);
             }
         }

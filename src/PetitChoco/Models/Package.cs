@@ -8,6 +8,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using NuGet;
+using NuGet.Packaging.Core;
 using Prism.Mvvm;
 
 namespace PetitChoco.Models
@@ -177,14 +178,21 @@ namespace PetitChoco.Models
         public Package( string dirName )
         {
             DirectoryName = dirName;
-            var reader = new NuGet.Packaging.PackageFolderReader(dirName).NuspecReader;
-            var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
-            MetaData = Models.MetaData.KnwonMetaData.Select(m =>
+            try
             {
-                string value;
-                ms.TryGetValue(m.Name, out value);
-                return m.CreateMetaData(value);
-            }).ToList();
+                var reader = new NuGet.Packaging.PackageFolderReader(dirName).NuspecReader;
+                var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
+                MetaData = Models.MetaData.KnwonMetaData.Select(m =>
+                {
+                    string value;
+                    ms.TryGetValue(m.Name, out value);
+                    return m.CreateMetaData(value);
+                }).ToList();
+            }
+            catch (PackagingException e)
+            {
+                MetaData = Models.MetaData.KnwonMetaData.Select(m => m.CreateMetaData("")).ToList();
+            }
             //.Select(m => new MetaData(m.Key, m.Value)).ToList();
         }
     }

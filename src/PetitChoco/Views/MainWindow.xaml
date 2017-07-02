@@ -11,6 +11,7 @@
         xmlns:views="clr-namespace:PetitChoco.Views"
         xmlns:converters="clr-namespace:PetitChoco.Converters"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
 
         mc:Ignorable="d"
         Title="MainWindow" Height="703.7" Width="956.399">
@@ -46,7 +47,13 @@
                         <TextBox VerticalContentAlignment="Center" Grid.Column="1" Margin="5,0,5,0" Text="{Binding PackageListPath.Value}" />
                         <Button Content="参照" Padding="20,5" Width="Auto" Grid.Column="2" />
                     </Grid>
-                    <ListBox Margin="0,0,0.333,0" Grid.Row="1" ItemsSource="{Binding PackageList.Value, Mode=OneWay}" SelectedValue="{Binding PackagePath.Value}" />
+                    <ListBox Margin="0,0,0.333,0" Grid.Row="1" ItemsSource="{Binding PackageList.Value, Mode=OneWay}" SelectedValue="{Binding PackagePath.Value}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding LoadPackageCommand}"></i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        </ListBox>
                 </Grid>
             </TabItem>
             <TabItem Header="設定">
@@ -160,7 +167,7 @@
                         </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="メタデータ名" Binding="{Binding Name.Value}"></DataGridTextColumn>
-                            <DataGridCheckBoxColumn Header="登録" Binding="{Binding IsExist.Value ,Mode=OneWay , Converter={StaticResource NullCheckBoxConverter}}"></DataGridCheckBoxColumn>
+                            <DataGridCheckBoxColumn Header="登録" Binding="{Binding IsExist.Value}"></DataGridCheckBoxColumn>
                             <DataGridTextColumn Header="型" Binding="{Binding EditMode.Value,Mode=OneWay}" />
                             <DataGridTemplateColumn Header="内容">
                                 <DataGridTemplateColumn.CellEditingTemplateSelector>
@@ -175,7 +182,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
-                        <Button Content="書き込み" Margin="5" Height="30" Padding="20,0" />
+                        <Button Content="書き込み" Margin="5" Height="30" Padding="20,0" Command="{Binding SaveNuspecFileCommand}" />
                     </StackPanel>
                 </Grid>
             </TabItem>
