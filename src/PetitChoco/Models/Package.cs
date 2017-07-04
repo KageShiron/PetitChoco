@@ -41,7 +41,7 @@ namespace PetitChoco.Models
                 new KnwonMetaData("mailingListUrl", "", EditMode.Url),
                 new KnwonMetaData("bugTrackerUrl", "", EditMode.Url),
                 new KnwonMetaData("tags", "", EditMode.SpaceSeparatedStrings),
-                new KnwonMetaData("summery", "", EditMode.MultiLineString),
+                new KnwonMetaData("summary", "", EditMode.MultiLineString),
                 new KnwonMetaData("description", "", EditMode.Markdown),
                 new KnwonMetaData("releaseNotes", "", EditMode.Markdown),
             };
