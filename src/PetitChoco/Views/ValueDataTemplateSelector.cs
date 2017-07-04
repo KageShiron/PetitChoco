@@ -34,10 +34,10 @@ namespace PetitChoco.Views
                 case EditMode.Url:
                 case EditMode.PackageId:
                 case EditMode.Version:
-                    template = "TextBoxTemplate";
+                    template = "TextBoxEditingTemplate";
                     break;
                 case EditMode.Boolean:
-                    template = "CheckBoxTemplate";
+                    template = "CheckBoxEditingTemplate";
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

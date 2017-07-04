@@ -38,6 +38,7 @@ namespace PetitChoco
 
         public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
         public ReactiveCommand SaveNuspecFileCommand { get; }
+        public ReactiveCommand<string> OpenInBrowserCommand { get; }
 
         public ViewModel()
         {
@@ -88,7 +89,11 @@ namespace PetitChoco
                 : FileTreeItem.GetChildren(x.DirectoryInfo.Value)).ToReactiveProperty();
 
             ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
-            //PackageMetaData = Package.ObserveProperty(x => x.Value.MetaData).ToReactiveProperty();
+            OpenInBrowserCommand = new ReactiveCommand<string>();
+            OpenInBrowserCommand.Subscribe(s =>
+            {
+                System.Diagnostics.Process.Start(s);
+            });
         }
     }
 }
