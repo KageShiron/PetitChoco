@@ -1,0 +1,54 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:PetitChoco.Views"
+                    xmlns:viewModels="clr-namespace:PetitChoco.ViewModels"
+                    xmlns:converters="clr-namespace:PetitChoco.Converters"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:models="clr-namespace:PetitChoco.Models"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:petitChoco="clr-namespace:PetitChoco">
+
+    <viewModels:NullCheckBoxConverter x:Key="NullCheckBoxConverter" />
+    <converters:TryParseConverter  x:Key="TryParseConverter"/>
+
+
+    <DataTemplate x:Key="TextBoxEditingTemplate">
+        <StackPanel Orientation="Horizontal">
+            <TextBox Text="{Binding Value}" x:Name="ValueTextBox"></TextBox>
+        </StackPanel>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding EditMode,Mode=OneWay}" Value="{x:Static models:EditMode.Markdown}">
+                <Setter TargetName="ValueTextBox" Property="AcceptsReturn" Value="True" />
+                <Setter TargetName="ValueTextBox" Property="AcceptsTab" Value="True" />
+                <Setter TargetName="ValueTextBox" Property="MinLines" Value="2" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+    <DataTemplate x:Key="CheckBoxEditingTemplate">
+        <StackPanel Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding Value}" />
+            <TextBlock Text="{Binding Value}" />
+        </StackPanel>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="TextCellTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Button Content="開く" x:Name="OpenBrowserButton" Visibility="Collapsed" Height="Auto" FontSize="10">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:InvokeCommandAction
+                            Command="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type Window}}
+                            , Path=DataContext.OpenInBrowserCommand}" CommandParameter="{Binding Value}"></i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Label Content="{Binding Value}" x:Name="ValueTextBox" Padding="5,0" ></Label>
+        </StackPanel>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding EditMode,Mode=OneWay}" Value="{x:Static models:EditMode.Url}">
+                <Setter TargetName="OpenBrowserButton" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+    
+</ResourceDictionary>
