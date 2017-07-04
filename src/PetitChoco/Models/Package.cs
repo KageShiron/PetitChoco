@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Security.AccessControl;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using NuGet;
 using NuGet.Packaging.Core;
 using Prism.Mvvm;
+using Reactive.Bindings;
+using PackageDependency = NuGet.Packaging.Core.PackageDependency;
 
 namespace PetitChoco.Models
 {
@@ -143,11 +147,31 @@ namespace PetitChoco.Models
         Version
     }
 
+    public class PackageFile
+    {
+        public PackageFile()
+        {
+            
+        }
+
+        public PackageFile( string src , string trg)
+        {
+            Source = src;
+            Target = trg;
+        }
+        public string Source { get; set; }
+        public string Target { get; set; }
+    }
+
     public class Package : BindableBase
     {
         public string DirectoryName { get; }
-        public IList<MetaData> MetaData { get; }
+        public ObservableCollection<MetaData> MetaData { get; }
+        public ObservableCollection<PackageFile> Files { get; }
         public DirectoryInfo DirectoryInfo => new DirectoryInfo(DirectoryName);
+
+        public ObservableCollection<PackageDependency> Dependencies { get; }
+        public string NuspecFileName { get; set; }
         /*
         public string RequireLicenseAcceptance { get; set; }
         public string Description { get; set; }
@@ -172,7 +196,7 @@ namespace PetitChoco.Models
         public Package()
         {
             DirectoryName = "";
-            MetaData = new List<MetaData>();
+            MetaData = new ObservableCollection<MetaData>();
         }
 
         public Package( string dirName )
@@ -180,18 +204,29 @@ namespace PetitChoco.Models
             DirectoryName = dirName;
             try
             {
-                var reader = new NuGet.Packaging.PackageFolderReader(dirName).NuspecReader;
+                var r = new NuGet.Packaging.PackageFolderReader(dirName);
+                var reader = r.NuspecReader;
+                NuspecFileName = r.GetNuspecFile();
+
+                var ns = reader.Xml.Root.GetDefaultNamespace();
+                Files = new ObservableCollection<PackageFile>(
+                    reader.Xml.Root.Elements(ns + "files").Elements()
+                    .Select(x => new PackageFile(x.Attribute("src").Value, x.Attribute("target").Value))
+                );
                 var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
-                MetaData = Models.MetaData.KnwonMetaData.Select(m =>
+                Dependencies =
+                    new ObservableCollection<PackageDependency>(reader.GetDependencyGroups().FirstOrDefault()
+                        ?.Packages ?? new PackageDependency[0]);
+                MetaData = new ObservableCollection<MetaData>(Models.MetaData.KnwonMetaData.Select(m =>
                 {
                     string value;
                     ms.TryGetValue(m.Name, out value);
                     return m.CreateMetaData(value);
-                }).ToList();
+                }));
             }
             catch (PackagingException e)
             {
-                MetaData = Models.MetaData.KnwonMetaData.Select(m => m.CreateMetaData("")).ToList();
+                MetaData = Models.MetaData.KnwonMetaData.Select(m => m.CreateMetaData("")).ToObservable().ToReactiveCollection();
             }
             //.Select(m => new MetaData(m.Key, m.Value)).ToList();
         }

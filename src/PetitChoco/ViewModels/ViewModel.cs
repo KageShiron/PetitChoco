@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -30,8 +32,9 @@ namespace PetitChoco
         public ReactiveProperty<ToolViewModel> ToolViewModel { get; }
         public ReactiveProperty<string> PackageListPath { get; set; }
         public ReactiveProperty<string[]> PackageList { get; }
+        public ReactiveProperty<ReactiveCollection<KeyValuePair<string, string>>> PackageFile { get; }
 
-        public ReactiveProperty<ReactiveCollection<MetaDataViewModel>> PackageMetaData { get; }
+        public ReactiveProperty<ObservableCollection<MetaData>> PackageMetaData { get; }
 
         public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
         public ReactiveCommand SaveNuspecFileCommand { get; }
@@ -48,14 +51,24 @@ namespace PetitChoco
             {
                 XNamespace ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd");
 
+                XElement dependencies = Package.Value.Dependencies.Count == 0 ? null
+                : new XElement(ns + "dependencies", Package.Value.Dependencies
+                .Select(d => new XElement(ns + "dependency"
+                      , new XAttribute(ns + "id", d.Id)
+                      , new XAttribute(ns + "version", d.VersionRange.ToString()))));
+                XElement metadata = new XElement(ns + "metadata", Package.Value.MetaData.Where(m => !string.IsNullOrWhiteSpace(m.Value))
+                    .Select(m => new XElement(ns + m.Name, m.Value)), dependencies);
 
-                XElement metadata = new XElement(ns + "metadata", Package.Value.MetaData.Where(m => !string.IsNullOrWhiteSpace(m.Value.Value)).Select(m => new XElement(ns + m.Name.Value, m.Value.Value)));
+                XElement files = new XElement(ns + "files",
+                    Package.Value.Files.Select(f => new XElement( ns+ "file"
+                    ,new XAttribute("src", f.Source)
+                    ,new XAttribute("target", f.Target))));
 
-                XElement package = new XElement(ns + "package",metadata);
+                XElement package = new XElement(ns + "package", metadata, files);
 
 
                 XDocument doc = new XDocument(package);
-                using (var w = new FileStream("c:/temp/test.xml", FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var w = new FileStream(Package.Value.NuspecFileName.Value, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
                     doc.Save(w);
                 }
@@ -75,7 +88,7 @@ namespace PetitChoco
                 : FileTreeItem.GetChildren(x.DirectoryInfo.Value)).ToReactiveProperty();
 
             ToolViewModel = new ReactiveProperty<ToolViewModel>(new ToolViewModel());
-            PackageMetaData = Package.Select(x => x.MetaData).ToReactiveProperty();
+            //PackageMetaData = Package.ObserveProperty(x => x.Value.MetaData).ToReactiveProperty();
         }
     }
 }

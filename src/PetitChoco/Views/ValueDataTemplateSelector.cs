@@ -19,12 +19,12 @@ namespace PetitChoco.Views
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            var vm = item as MetaDataViewModel;
+            var vm = item as MetaData;
             if (vm == null) return null;
             var element = container as FrameworkElement;
 
             string template = null;
-            switch (vm.EditMode.Value)
+            switch (vm.EditMode)
             {
                 case EditMode.MultiLineString:
                 case EditMode.SingleLineString:
