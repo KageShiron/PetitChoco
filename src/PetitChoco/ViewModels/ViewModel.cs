@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -29,6 +30,8 @@ namespace PetitChoco
         public ReactiveProperty<PackageViewModel> Package { get; }
 
         public ReactiveCommand LoadPackageCommand { get; }
+        public ReactiveCommand OpenPackageCommand { get; }
+        public ReactiveCommand EditPackageCommand { get; }
         public ReactiveProperty<ToolViewModel> ToolViewModel { get; }
         public ReactiveProperty<string> PackageListPath { get; set; }
         public ReactiveProperty<string[]> PackageList { get; }
@@ -46,13 +49,17 @@ namespace PetitChoco
             Package = new ReactiveProperty<PackageViewModel>(new PackageViewModel());
             LoadPackageCommand = new ReactiveCommand();
             LoadPackageCommand.Subscribe(() => Package.Value = new PackageViewModel(new Package(PackagePath.Value)));
+            OpenPackageCommand = new ReactiveCommand();
+            OpenPackageCommand.Subscribe(() => Process.Start("explorer",PackagePath.Value));
+            EditPackageCommand = new ReactiveCommand();
+            EditPackageCommand.Subscribe(() => Process.Start("code", PackagePath.Value));
 
             SaveNuspecFileCommand = new ReactiveCommand();
             SaveNuspecFileCommand.Subscribe(() =>
             {
                 XNamespace ns = XNamespace.Get("http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd");
 
-                XElement dependencies = Package.Value.Dependencies.Count == 0 ? null
+                XElement dependencies = Package.Value?.Dependencies.Count == 0 ? null
                 : new XElement(ns + "dependencies", Package.Value.Dependencies
                 .Select(d => new XElement(ns + "dependency"
                       , new XAttribute(ns + "id", d.Id)

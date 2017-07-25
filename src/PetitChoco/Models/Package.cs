@@ -214,9 +214,9 @@ namespace PetitChoco.Models
                     .Select(x => new PackageFile(x.Attribute("src").Value, x.Attribute("target").Value))
                 );
                 var ms = reader.GetMetadata().ToDictionary(x => x.Key, x => x.Value);
-                Dependencies =
-                    new ObservableCollection<PackageDependency>(reader.GetDependencyGroups().FirstOrDefault()
-                        ?.Packages ?? new PackageDependency[0]);
+                Dependencies = new ObservableCollection<PackageDependency>();
+                Dependencies.AddRange(reader.GetDependencyGroups().FirstOrDefault()?.Packages ??
+                                      new PackageDependency[0]);
                 MetaData = new ObservableCollection<MetaData>(Models.MetaData.KnwonMetaData.Select(m =>
                 {
                     string value;

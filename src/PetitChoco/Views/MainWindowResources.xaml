@@ -42,11 +42,15 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </Button>
+            <Image x:Name="PackageIconImage"  Visibility="Collapsed" Width="16" Height="16" Source="{Binding Value}" />
             <Label Content="{Binding Value}" x:Name="ValueTextBox" Padding="5,0" ></Label>
         </StackPanel>
         <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding EditMode,Mode=OneWay}" Value="{x:Static models:EditMode.Url}">
                 <Setter TargetName="OpenBrowserButton" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Name,Mode=OneWay}" Value="iconUrl">
+                <Setter TargetName="PackageIconImage" Property="Visibility" Value="Visible" />
             </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
