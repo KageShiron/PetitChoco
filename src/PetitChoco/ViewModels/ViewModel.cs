@@ -44,7 +44,10 @@ namespace PetitChoco
         public ReactiveCommand SaveNuspecFileCommand { get; }
         public ReactiveCommand<string> OpenInBrowserCommand { get; }
         public ReactiveCommand<Uri> WebBrowserNavigateCommand { get; set; }
-
+        public ReactiveCommand BrowsePackageCommand { get; }
+        public ReactiveCommand BrowseProjectCommand { get; }
+        public ReactiveCommand BrowseProjectSourceCommand { get; }
+        public ReactiveCommand BrowsePackageSourceCommand { get; }
         public ReactiveProperty<Uri> ChocolateyOrgUrl { get; }
 
         public ViewModel()
@@ -105,8 +108,26 @@ namespace PetitChoco
             {
                 System.Diagnostics.Process.Start(s);
             });
-            Package.Subscribe(pack => WebBrowserNavigateCommand?.Execute(new Uri(
-                "https://chocolatey.org/packages/" + pack.MetaData.Where(x => x.Name == "id").FirstOrDefault()?.Value)));
+
+            BrowsePackageCommand = new ReactiveCommand();
+            BrowsePackageCommand.Subscribe(_ => WebBrowserNavigateCommand?.Execute(new Uri(
+                "https://chocolatey.org/packages/" + Package.Value.MetaData.Where(x => x.Name == "id").FirstOrDefault()
+                    ?.Value)));
+
+
+            BrowseProjectCommand = new ReactiveCommand();
+            BrowseProjectCommand.Subscribe(_ => WebBrowserNavigateCommand?.Execute(new Uri(
+                Package.Value.MetaData.Where(x => x.Name == "projectUrl").FirstOrDefault()
+                    ?.Value)));
+
+            BrowseProjectSourceCommand = new ReactiveCommand();
+            BrowseProjectSourceCommand.Subscribe(_ => WebBrowserNavigateCommand?.Execute(new Uri(
+                Package.Value.MetaData.Where(x => x.Name == "projectSourceUrl").FirstOrDefault()
+                    ?.Value)));
+            BrowsePackageSourceCommand = new ReactiveCommand();
+            BrowsePackageSourceCommand.Subscribe(_ => WebBrowserNavigateCommand?.Execute(new Uri(
+                Package.Value.MetaData.Where(x => x.Name == "packageSourceUrl").FirstOrDefault()
+                    ?.Value)));
         }
     }
 }
