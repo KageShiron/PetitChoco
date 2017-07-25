@@ -11,6 +11,7 @@ using System.Reactive.Threading.Tasks;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Xml.Linq;
 using NuGet;
 using PetitChoco.Models;
@@ -42,6 +43,9 @@ namespace PetitChoco
         public ReactiveProperty<IEnumerable<FileTreeItem>> PackageRootItem { get; }
         public ReactiveCommand SaveNuspecFileCommand { get; }
         public ReactiveCommand<string> OpenInBrowserCommand { get; }
+        public ReactiveCommand<Uri> WebBrowserNavigateCommand { get; set; }
+
+        public ReactiveProperty<Uri> ChocolateyOrgUrl { get; }
 
         public ViewModel()
         {
@@ -101,6 +105,8 @@ namespace PetitChoco
             {
                 System.Diagnostics.Process.Start(s);
             });
+            Package.Subscribe(pack => WebBrowserNavigateCommand?.Execute(new Uri(
+                "https://chocolatey.org/packages/" + pack.MetaData.Where(x => x.Name == "id").FirstOrDefault()?.Value)));
         }
     }
 }

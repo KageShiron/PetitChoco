@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PetitChoco"
         xmlns:views="clr-namespace:PetitChoco.Views"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" 
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:viewModels="clr-namespace:PetitChoco.ViewModels"
 
         mc:Ignorable="d"
         Title="MainWindow" Height="703.7" Width="956.399">
@@ -238,7 +239,13 @@
                 </Grid>
             </TabItem>
             <TabItem Header="テスト" />
-            <TabItem Header="公式"></TabItem>
+            <TabItem Header="公式">
+                <WebBrowser x:Name="WebBrowser">
+                    <i:Interaction.Behaviors>
+                        <viewModels:WebBrowserBehavior />
+                    </i:Interaction.Behaviors>
+                </WebBrowser>
+            </TabItem>
         </TabControl>
     </Grid>
 </Window>
